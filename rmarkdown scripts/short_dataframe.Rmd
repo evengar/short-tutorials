@@ -1,0 +1,157 @@
+---
+title: "The shortest guide on data.frames you have ever seen"
+author: "Even Garvang"
+date: "Spring 2020"
+output: bookdown::html_document2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+A data.frame is arguably the most important kind of object you work with in R as a biologist. This very short tutorial covers some important aspects of handling data.frames, namely adding and extracting information, and subsetting.
+
+We will make this example data.frame for working with throughout:
+
+```{r}
+my_df <- data.frame(
+  numbers_1 = 1:5,
+  numbers_2 = 6:10,
+  letters_1 = letters[1:5],
+  letters_2 = letters[6:10],
+  stringsAsFactors = FALSE
+)
+my_df
+```
+
+
+# Accessing data within your data.frame
+
+You can extract data in two main ways: with the `$` operator or with square brackets `[]`.
+
+The `$` operator extracts a column from the data frame into a vector:
+
+```{r}
+my_df$numbers_1
+my_df$letters_1
+```
+
+Square brackets can take either rows or columns, as well as single data entries. The syntax is `data[row,column]`. If you leave either of the fields within the brackets empty, it will return all the rows or columns, respectively.
+
+```{r}
+# extract data from row 2, column 4:
+my_df[2,4]
+#extract row 2, column 1 and 3:
+my_df[2, c(1,3)]
+
+# extract row 2, all columns:
+my_df[2,]
+# extract column 4, all rows:
+my_df[,4]
+
+```
+
+Note that the last one is the same as writing `my_data$letters_2`.
+
+You can also supply a column name in the brackets to extract one or more column (remember quotation marks):
+
+```{r}
+my_df["letters_1"]
+my_df[c("numbers_2", "letters_2")]
+```
+
+# Changing data and adding columns
+## Changing data
+
+Luckily, the process for changing a data point is very similar to extracting one. All you need to do is to put the indexing on the left side of `<-` (or `=`).
+
+```{r}
+# change a single value
+my_df[2,4] <- "changed"
+my_df
+
+# change a column
+my_df$numbers_2 <- c(1,1,2,3,5)
+my_df
+
+# change a row
+my_df[1,] <- c("this", "row", "is", "changed")
+my_df
+```
+
+Notice how this changes the original data, so use this with caution!
+
+```{r}
+# make a new df since we broke the last one ...
+my_df <- data.frame(
+  numbers_1 = 1:5,
+  numbers_2 = 6:10,
+  letters_1 = letters[1:5],
+  letters_2 = letters[6:10],
+  stringsAsFactors = FALSE
+)
+```
+
+
+## Adding columns
+In the same way you can write e.g. `my_df$numbers_2 <-` to overwrite the column `numbers_2`, you can create a new column by writing a name that doesn't already exist:
+
+```{r}
+# new column
+my_df$numbers_3 <- 11:15
+my_df
+```
+
+A very useful application if this is that you can compute values in a new column using data from other columns:
+
+```{r}
+my_df$numbers_4 <- my_df$numbers_1 + my_df$numbers_3
+my_df
+```
+
+This kind of vectorized operations is among the most useful features of R, and it is essential for handling data.
+
+# Subsetting
+Subsetting is similar to extracting data in that you select out certain rows (and columns). You can use either the square brackets or R's `subset` function for this. A difference is that when subsetting, you often want to select rows based on some defined criteria, and often you use R's logical operators, like `==`, `>` or `%in%` for this. This is based on a different way of extracting data than we covered before, namely **providing a vector of `TRUE` and `FALSE` to select all row numbers that are `TRUE`.** For example, for selecting rows 1 and 2, you could write:
+
+```{r}
+my_df[1:2,]
+```
+
+But you could also write:
+
+```{r}
+my_df[c(TRUE,TRUE,FALSE,FALSE,FALSE),]
+```
+
+Then, consider that writing:
+
+```{r}
+my_df$numbers_1 < 3
+```
+
+provides the exact same vector that we used earlier for subsetting. This means that you can write:
+
+```{r}
+my_df[my_df$numbers_1 < 3,]
+```
+
+to select all rows where the `numbers_1` column is smaller than 3.
+
+You can select based on several criteria using the `%in%` operator, which checks if the value of your data is equal to a value in a vector you provide, e.g.:
+
+```{r}
+my_df[my_df$letters_1 %in% c("a", "b"),]
+```
+
+I won't cover the logical operators comprehensively here, but a lot of material is available online. It is as simple as: **if you are able to create your subsetting criteria as a logical statement in R, you will have no trouble subsetting.**
+
+An alternative to using square brackets is using the `subset` function. This works in the same way, with logical operators, but a different syntax.
+
+```{r}
+subset(my_df, numbers_1 < 3)
+
+subset(my_df, letters_1 %in% c("a", "b"))
+```
+
+If you want to know more about the `subset` function, try accessing it's help page by writing `?subset`.

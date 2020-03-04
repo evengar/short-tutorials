@@ -1,0 +1,308 @@
+---
+title: "Plotting in R"
+author: "Even Garvang"
+date: "Spring 2019"
+output: 
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    highlight: pygments
+editor_options: 
+  chunk_output_type: console
+---
+
+<style type="text/css">
+
+.subtitle { font-size: 24px; }
+
+.author { font-size: 16px; 
+  font-style: italic;
+  }
+
+.date { font-size: 16px; 
+  font-style: italic;
+  }
+
+h1 { font-size: 28px; }
+
+h2 { font-size: 24px; }
+
+h3 { font-size: 20px; }
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      fig.width = 5, 
+                      fig.asp = 3/4, 
+                      comment = "#>",
+                      warning = FALSE,
+                      message = FALSE,
+                      collapse = TRUE)
+```
+
+# Introduction
+
+R is a powerful tool for visualising your data. You can make almost any kind of plot, revealing connections that are hard to see from summary statistics. This tutorial is not meant to be a comprehensice guide on plotting in R, but rather a starting point, introducing the most important methods.
+
+Section \@ref(ggplot) is optional, and introduces ggplot2, a different system for plotting in R. 
+
+
+## Why visualise your data?
+
+You may think that communication is the most important reason for visualising your data. This is partly true, as a good graph can convey a lot of information more easily than text or tables. Hovever, you will find that you make a lot of graphs that you never show to others. These are graphs that you make for yourself to investigate connections in the data. Visualisations are not only important for communication, but also for the process of data exploration.
+
+For learning about the powers of data visualisation, as well as the do's and dont's of making graphs, I recommend the book [Data Visualization](https://socviz.co/) by Kieran Healy.
+
+## Prerequisites
+
+For this exercise we will only use base R and its built-in `iris` data set. For the optional section \@ref(ggplot) you will need the `ggplot2` package, that you can install by running `install.packages("ggplot2")`.
+
+# Plotting in R
+
+The basic function for plotting in R is simply `plot()`. This function will guess what kind of plot to make based on the data you provide. You can supply many arguments to the `plot()` function to get the visualisation you want, which we will gradually go through here.
+
+## Plotting vectors
+
+The simplest way of plotting in R is by plotting two vectors of equal length. One vector gives the x-value, and another gives the y-value.
+
+```{r plvec, caption = "Two vectors plotted against each other."}
+# make two vectors of equal length
+x <- 1:50
+y <- 51:100
+
+plot(x, y)
+
+```
+
+As you can see, it makes a simple plot of our data, using points as the default. If we want to make a line graph we have to specify `type = "l"`:
+
+```{r}
+plot(x, y, type = "l")
+```
+
+For all the different ´type´ arguments, see the plot-function's help page by running `?plot`.
+
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
+**Tip:** Remember that when you use R's `$` operator to pick out a single column from a data frame, you create a vector. Using this, you can easily plot the columns of your data frame. Another way of doing this is introduced in section \@ref(pltdf).
+
+</div>
+
+## Plotting functions
+
+You can also plot simple functions easily with the `plot()` function. You don't have to give an x-value when plotting this way, and you can control what x-values to show with the `xlim` argument.
+
+```{r, fig.cap = 'Plotting the function "myexp". Right: controlling the x-value to range between -5 and 5.'}
+# define a function
+myexp <- function(x){
+  exp(x)/x
+} 
+
+# fit two plots in one window using par()
+par(mfrow = c(1, 2))
+
+# plot with default xlim
+plot(myexp)
+
+# plot with x in a range between -5 and 5
+plot(myexp, xlim = c(-5, 5))
+
+# reset parameters to one plot per window
+par(mfrow = c(1, 1))
+
+```
+
+Notice how the plot-function again guesses that we want lines for our graph. Remember that you can change this with `type`.
+
+## Plotting data frames {#pltdf}
+
+The thing you probably will plot most often is data frames, containing your own or someone else's data. For this part we will use the `iris` data set, which is a built-in data set in R (which means you don't need to load it in any way). We start by inspecting the object:
+
+```{r}
+summary(iris)
+```
+
+As you can see, it contains four continous measurements for 50 individuals each from three different species of _Iris_. We could just simply write `plot(iris)`, which plots all the values against each other:
+
+```{r, fig.cap = "A plot of the entire iris data set."}
+plot(iris)
+```
+
+Even for this relatively small data set this visualisation can be quite overwhelming. While this kind of plotting can be useful to get an overview, we often want to focus on specific relationships between our data. To plot two values against each other you use the following syntax: `plot(response_variable ~ explanatory_variable, data = my_data)`. If we want to investigate the relationship between petal length and sepal length in the `iris` data, we would do the following:
+
+```{r, fig.cap = "Sepal length vs. petal length"}
+plot(Sepal.Length ~ Petal.Length, data = iris)
+
+```
+
+We get a nice scatterplot of those data. There is some pattern here, which we will explore later, in section \@ref(col). If we want to plot numerical data (e.g. petal width) as a function of categorical data (here species), the approach is the same:
+
+```{r, fig.cap="R automatically assumed you wanted a boxplot!"}
+plot(Petal.Width ~ Species, data = iris)
+```
+
+The plotting function automatically makes a boxplot! When presented with one categorical and one numeric variable, R assumes that a boxplot is the best way to present that data. Be careful with this behavior, as R aren't always right about this. You should always think about how _you_ want to present your data, rather than going with what R suggests^[I wasn't able to find any way to plot just the points without the boxplot, it seems base R plotting doesn't have this functionality. If you want to plot just the points I recommend ggplot2.].
+
+Often, you don't want R to guess for you, but rather specify yourself what you want to plot, leading us into the next section.
+
+## Special plot commands (histograms, boxplots, barcharts etc.)
+
+While `plot()` is good for a lot of things, you'll want other things than scatterplots and boxplots. Then you have to use different functions for making your plot:
+
+* `barplot()` for barplots
+* `hist()` for histograms
+* `boxplot` for boxplots
+
+```{r, fig.cap = "Examples of special plot commands", fig.asp = 16/9}
+# examples
+par(mfrow = c(3, 1))
+
+barplot(table(iris$Species), main = "Barplot: no. of iris individuals per species")
+hist(iris$Sepal.Length)
+boxplot(Petal.Width ~ Species, data = iris, main = "Boxplot of petal width by species")
+
+par(mfrow = c(1,1))
+```
+
+Additionally, some functions add elements to an existing plot instead of creating a new one:
+
+* `lines()` add lines on top
+* `points()` add points on top
+
+```{r, fig.cap="Plot with added line (red) and added points (blue)"}
+
+plot(x, y, type = "l")
+lines(x, y - 5, col = "red")
+points(c(0, 10, 15), c(60, 80, 70), col = "blue")
+
+```
+
+
+## Customizing your plots
+
+While the plots we made mostly show the data we want to, they certainly are not publication ready. In this section I will go through some parameters to adjust to make the graphs prettier and more informative. This is not meant to be a comprehensive guide, as there are so many options, but rather an introduction to what you can do with your graphs.
+
+### Changing point shape and line type
+
+You can change the shape of points with the argument `pch`. You can see the options you have in figure \@ref(fig:pch) (notice that 21-25 supports fill colors, while the others don't).
+
+```{r pch, echo = FALSE, out.height= "50%", out.width="70%", fig.cap = "pch options"}
+knitr::include_graphics("r-plot-pch-symbols-points-in-r.png")
+```
+
+Returning to one of our earlier plots, we can try this out:
+
+```{r}
+plot(Sepal.Length ~ Petal.Length, data = iris, pch = 15)
+```
+
+Another adjustment you can make is to change line type with `lty`:
+
+```{r}
+plot(x, y, type = "l", lty = 2)
+```
+
+I recommend trying out what options you have here, or look it up online.
+
+### Adding colors and legends {#col}
+
+Still, our plot is really black and white, and could use some color. The color argument is simply `col`.
+
+```{r}
+plot(Sepal.Length ~ Petal.Length, data = iris, pch = 15, col = "red")
+```
+
+There are a ton of available colors, and I recommend googling "R colors" to see what options you have. You can also provide hexadecimal (e.g. `col = "#eda611"`) or rgb colors (e.g. `col = rgb(132, 77, 73 )`), if you want to be really precise.
+
+The red color makes our plot prettier, but not more informative. A good approach here would be to color the points by species. You can do this by providing a vector instead of a color name. The syntax here is rather weird, and just something you have to remember^[I'd argue that this kind of plotting is a lot easier in ggplot2 (see section \@ref(ggplot))].
+
+```{r, fig.cap="A plot with color-coded species, but which is which?"}
+plot(Sepal.Length ~ Petal.Length, data = iris, pch = 15, col = c("red", "blue", "black")[iris$Species])
+```
+
+Now you have colors, but no way of telling which is which. To see this you have to add a legend. Legends in base R plotting are manual, and have to be added to the plot after creating it, with the `legend()` function.
+
+```{r, fig.cap = "With a legend you can see which color is which species!"}
+plot(Sepal.Length ~ Petal.Length, data = iris, pch = 15, col = c("red", "blue", "black")[iris$Species])
+legend("bottomright", legend = levels(iris$Species), col = c("red", "blue", "black"), pch = 15)
+```
+
+As a side note, you can apply this same procedure for `pch` and `lty` as well if you want to.
+
+#### A note about color choice
+
+When you choose colors for your plot, remember that not all people can distinguish all colors! Red-green colorblindness is quite common, so you should never distinguish your points using these two colors. See e.g. [this page](https://venngage.com/blog/color-blind-friendly-palette/#4) for some tips on being color blind friendly. 
+
+### Modifying axis labels, title, etc.
+
+Our plot is nearly good, but we should modify our labels and create a title for it to be more informative! This is done with the `main`, `xlab` and `ylab` arguments of the `plot()` function.
+
+```{r, fig.cap = "Our finished plot!"}
+plot(Sepal.Length ~ Petal.Length, 
+     data = iris, 
+     pch = 15, 
+     col = c("red", "blue", "black")[iris$Species],
+     main = "Relationship between Iris' petal and sepal length",
+     xlab = "Petal length",
+     ylab = "Sepal length")
+legend("bottomright", legend = levels(iris$Species), col = c("red", "blue", "black"), pch = 15)
+```
+
+<div class = "blue">
+
+**Tip:** Notice how I have placed the arguments on separate lines for better readability in the example above. As long as you have an unclosed parenthesis R will not care about the line breaks, so I recommend this approach whenever you use many arguments of a function.
+
+</div>
+
+
+The arguments `xlim` and `ylim` modifies our view of the x and y-axis respectively. If we wanted to focus on just _I. versicolor_ and _I. virginica_ we could use these arguments^[A cleaner approach to this would probably be to exclude _I. setosa_ from our data before plotting]:
+
+```{r, fig.cap="Our plot, zoomed in on versicolor and virginica"}
+plot(Sepal.Length ~ Petal.Length, 
+     data = iris, 
+     pch = 15, 
+     col = c("red", "blue", "black")[iris$Species],
+     main = "Relationship between Iris' petal and sepal length",
+     xlab = "Petal length",
+     ylab = "Sepal length",
+     xlim = c(2.5, 7))
+legend("bottomright", legend = levels(iris$Species), col = c("red", "blue", "black"), pch = 15)
+```
+
+
+
+# ggplot2 {#ggplot}
+
+ggplot2 is a different system altogether for plotting in R.  Some of the benefits are:
+
+* Looks pretty straight away
+* It never guesses for you what visualisation you want to make, you have to tell it what to do
+* Automatic generation of legend, making it harder to mess up
+* A lot of default colorblind friendly palettes
+* Easy to map variables to e.g. color, point type etc.
+
+Some drawbacks are:
+
+* Pretty visuals may blind you to problems with your visualisation
+* It never guesses for you what visualisation you want to make, you have to tell it what to do
+* Your data always has to be contained in a data frame (although it mostly will be anyway)
+* It's troublesome to use in functions
+* Modifying graphical parameters can sometimes be a hassle, be prepared for spending a lot of time on stackoverflow!
+
+
+ggplot2 will not be taught in this course, but I recommend [chapter 3](https://r4ds.had.co.nz/data-visualisation.html) of [R for Data Science](https://r4ds.had.co.nz/) if you want to know more, that's how I learned this!
+
+To see the potential of ggplot, here is how easy it is to make the same graph as we made in base plot:
+
+```{r, fig.asp = 0.618}
+library(ggplot2)
+ggplot(iris, aes(Petal.Length, Sepal.Length, col = Species)) +
+  geom_point(pch = 15) +
+  labs(title = "Relationship between Iris' petal and sepal length",
+     x = "Petal length",
+     y = "Sepal length")
+```
+
