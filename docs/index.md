@@ -1,5 +1,7 @@
-# [data import](https://evengar.github.io/short-tutorials/data-import.html)
+# Short tutorials
 
-# [data frames and subsetting](https://evengar.github.io/short-tutorials/short_dataframe.html)
+* [data import](https://evengar.github.io/short-tutorials/data-import.html)
 
-# [plotting](https://evengar.github.io/short-tutorials/plotting.html)
+* [data frames and subsetting](https://evengar.github.io/short-tutorials/short_dataframe.html)
+
+* [plotting](https://evengar.github.io/short-tutorials/plotting.html)
