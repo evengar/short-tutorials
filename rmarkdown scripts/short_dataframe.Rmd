@@ -1,9 +1,34 @@
 ---
-title: "The shortest guide on data.frames you have ever seen"
+title: "A very short guide on data.frames"
 author: "Even Garvang"
 date: "Spring 2020"
-output: bookdown::html_document2
+output: 
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    highlight: pygments
+editor_options: 
+  chunk_output_type: console
 ---
+
+<style type="text/css">
+
+.subtitle { font-size: 24px; }
+
+.author { font-size: 16px; 
+  font-style: italic;
+  }
+
+.date { font-size: 16px; 
+  font-style: italic;
+  }
+
+h1 { font-size: 28px; }
+
+h2 { font-size: 24px; }
+
+h3 { font-size: 20px; }
+</style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -144,7 +169,7 @@ You can select based on several criteria using the `%in%` operator, which checks
 my_df[my_df$letters_1 %in% c("a", "b"),]
 ```
 
-I won't cover the logical operators comprehensively here, but a lot of material is available online. It is as simple as: **if you are able to create your subsetting criteria as a logical statement in R, you will have no trouble subsetting.**
+I won't cover the logical operators comprehensively here, but a lot of material is available online. It is as simple as: **if you are able to create your subsetting criteria as a logical expression in R, you will have no trouble subsetting.**
 
 An alternative to using square brackets is using the `subset` function. This works in the same way, with logical operators, but a different syntax.
 
