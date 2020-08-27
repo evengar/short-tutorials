@@ -219,7 +219,11 @@ There are a ton of available colors, and I recommend googling "R colors" to see 
 
 The red color makes our plot prettier, but not more informative. A good approach here would be to color the points by species. You can do this by providing a vector instead of a color name. The syntax here is rather weird, and just something you have to remember^[I'd argue that this kind of plotting is a lot easier in ggplot2 (see section \@ref(ggplot))].
 
+_Edit August 27th 2020: With R version 4.0 onwards, strings aren't automatically converted to factors when importing data. In practice this means that you need to turn_ `iris$species` _into a factor variable before plotting (or using_ `stringsAsFactors = TRUE` _on import). This is reflected in the updated code below:_
+
 ```{r, fig.cap="A plot with color-coded species, but which is which?"}
+iris$Species <- factor(iris$Species)
+
 plot(Sepal.Length ~ Petal.Length, data = iris, pch = 15, col = c("red", "blue", "black")[iris$Species])
 ```
 
