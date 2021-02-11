@@ -10,7 +10,6 @@ output:
     css: "style.css"
 editor_options: 
   chunk_output_type: console
-css: style.css
 ---
 
 <style type="text/css">
