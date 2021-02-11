@@ -1,0 +1,14 @@
+taxon	Group	0m	2m	4m	6m	8m	10m	12m	14m	16m
+acartia	Copepods	0	1	1	27	11	17	13	7	6
+Bivalve larvae	Bivalve larvae	0	0	0	0	0	0	0	0	0
+calanus.sp	Copepods	3	0	0	0	0	0	0	0	0
+ciliate	Miscellaneous	0	0	0	0	2	0	0	0	0
+cirripedia.nauplius	Nauplii	0	0	0	1	1	1	0	0	0
+fish.larvae	Miscellaneous	0	0	0	0	0	1	0	0	0
+harpacticoida	Copepods	0	0	0	1	2	3	1	13	6
+misc	Miscellaneous	1	0	0	0	0	0	0	0	0
+naupli	Nauplii	4	14	21	58	58	70	75	57	51
+oithona	Copepods	2	6	7	0	6	0	0	0	0
+oncaea	Copepods	0	1	0	0	0	0	0	0	0
+polych.larvae	Polychaete larvae	0	0	0	2	3	12	17	12	7
+temora	Copepods	0	0	1	2	3	2	1	0	1

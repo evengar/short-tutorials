@@ -30,9 +30,13 @@ h2 { font-size: 24px; }
 h3 { font-size: 20px; }
 </style>
 
+This guide is a part of a series of short tutorials. Find all the tutorials [here](https://evengar.github.io/short-tutorials/).
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Introduction {-}
 
 A data.frame is arguably the most important kind of object you work with in R as a biologist. This very short tutorial covers some important aspects of handling data.frames, namely adding and extracting information, and subsetting.
 

@@ -23,6 +23,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       collapse = TRUE)
 ```
 
+This guide is a part of a series of short tutorials. Find all the tutorials [here](https://evengar.github.io/short-tutorials/).
+
 # Introduction {-}
 
 You have already learned how to make basic plots with base R in the [short tutorial about plotting](https://evengar.github.io/short-tutorials/plotting.html). However, when making more advanced plots, for example plotting model predictions with confidence intervals, base R may become a bit clunky to use. In this tutorial you will learn about the `ggplot2` package, where you gain quite a lot of useful functionality, at the expense of having to learn some new syntax.
@@ -63,7 +65,7 @@ library(ggplot2)
 We will use the `student_means.csv` data for plotting, so we need to import that, and look at what it contains. NB! We will use the argument `stringsAsFactors = TRUE` when we import, to ensure that all text columns are encoded as factors (this is convenient when the goal is to model).
 
 ```{r, echo = FALSE}
-student_means <- read.csv("../student_means.csv", stringsAsFactors = TRUE)
+student_means <- read.csv("data/student_means.csv", stringsAsFactors = TRUE)
 ```
 
 
@@ -241,7 +243,7 @@ For this part, we will use the [wheatlings_bio2150_F18.csv](https://github.com/e
 First, we import and look at the data, like we did for the student data.
 
 ```{r, echo = FALSE}
-wheat <- read.csv("../wheatlings_bio2150_F18.csv", stringsAsFactors = TRUE)
+wheat <- read.csv("data/wheatlings_bio2150_F18.csv", stringsAsFactors = TRUE)
 ```
 
 

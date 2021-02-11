@@ -41,6 +41,8 @@ knitr::opts_chunk$set(echo = TRUE,
 
 _Last updated 2020-01-16: Added some special instructions for Rmarkdown users._
 
+This guide is a part of a series of short tutorials. Find all the tutorials [here](https://evengar.github.io/short-tutorials/).
+
 # Introduction
 
 At some point as a biologist you will have your own data to work with, and you will have to import it into R to use all its powerful tools. However, it's not given that your data is easy to import, unless you think about how to format it beforehand. This guide will help you get your data into R and start working. Section \@ref(tips) is optional, but contains some general tips for working with data.
@@ -86,7 +88,7 @@ For the plain text documents, the file extensions sometimes tell you what you ar
 \
 
 ```{r formats, out.width="80%", echo=FALSE, fig.cap="The data from example.xlsx in different plain-text formats"}
-knitr::include_graphics("formats.jpg")
+knitr::include_graphics("data/formats.jpg")
 ```
 
 
@@ -96,13 +98,13 @@ While Excel is not recommended for importing your finished dataset, it is good f
 
 ```{r readxl}
 library(readxl)
-read_xlsx("example.xlsx")
+read_xlsx("data/example.xlsx")
 ```
 
 For our data, this works fine. However, we should strive to use the plain text format for reasons outlined above. To do this we have to export from Excel. Go to `File > Export` to choose a format. I'm going with tabulator separation, see Figure \@ref(fig:export) (which unfortunately is in Norwegian, sorry non-norwegian speakers!).
 
 ```{r export, echo=FALSE, fig.cap = "How to export a file to a tsv (in Norwegian)"}
-knitr::include_graphics("export_1.jpg")
+knitr::include_graphics("data/export_1.jpg")
 ```
 
 
@@ -128,7 +130,7 @@ Since my data is tabulator separated, is called "example.tsv.txt" (yours may be 
 
 
 ```{r, results = "hide"}
-my_data <- read.table("example.tsv.txt", header = TRUE, sep = "\t", dec = ".")
+my_data <- read.table("data/example.tsv.txt", header = TRUE, sep = "\t", dec = ".")
 my_data
 ```
 
@@ -208,7 +210,7 @@ After working with your data, you might want to export it to a file again for us
 
 For writing to a text document, you can use `write.table` and `write.csv`. You have many options on how to write your file, but the least you need is an R object and a filename.
 
-```{r wrttbl}
+```{r wrttbl, eval = FALSE}
 write.table(my_data, "my_data.txt")
 
 ## OR
@@ -226,7 +228,7 @@ write.csv(my_data, "my_data.csv")
 
 When writing to an R data file you use the functions `save` and `saveRDS`. The former can store many objects in an .RData file, while the latter can store one object in an .rds file. For more differences see section \@ref(rdata).
 
-```{r}
+```{r, eval = FALSE}
 # saving multiple objects
 save(my_data, a, b, file = "all_objects.RData")
 

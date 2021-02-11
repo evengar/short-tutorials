@@ -41,6 +41,8 @@ knitr::opts_chunk$set(echo = TRUE,
                       collapse = TRUE)
 ```
 
+This guide is a part of a series of short tutorials. Find all the tutorials [here](https://evengar.github.io/short-tutorials/).
+
 # Introduction
 
 R is a powerful tool for visualising your data. You can make almost any kind of plot, revealing connections that are hard to see from summary statistics. This tutorial is not meant to be a comprehensice guide on plotting in R, but rather a starting point, introducing the most important methods.
@@ -191,7 +193,7 @@ While the plots we made mostly show the data we want to, they certainly are not 
 You can change the shape of points with the argument `pch`. You can see the options you have in figure \@ref(fig:pch) (notice that 21-25 supports fill colors, while the others don't).
 
 ```{r pch, echo = FALSE, out.height= "50%", out.width="70%", fig.cap = "pch options"}
-knitr::include_graphics("r-plot-pch-symbols-points-in-r.png")
+knitr::include_graphics("data/r-plot-pch-symbols-points-in-r.png")
 ```
 
 Returning to one of our earlier plots, we can try this out:
