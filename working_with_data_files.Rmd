@@ -96,10 +96,18 @@ knitr::include_graphics("data/formats.jpg")
 
 While Excel is not recommended for importing your finished dataset, it is good for inputting data. Therefore, it's likely that you will have your data in an .xlsx-file when you start working with it. Now, we could just import it with `read_xlsx()` from the readxl package (remember to install it first!), like this:
 
-```{r readxl}
+```{r, eval = FALSE}
+library(readxl)
+read_xlsx("example.xlsx")
+```
+
+```{r readxl, echo = FALSE}
 library(readxl)
 read_xlsx("data/example.xlsx")
 ```
+
+
+
 
 For our data, this works fine. However, we should strive to use the plain text format for reasons outlined above. To do this we have to export from Excel. Go to `File > Export` to choose a format. I'm going with tabulator separation, see Figure \@ref(fig:export) (which unfortunately is in Norwegian, sorry non-norwegian speakers!).
 
@@ -128,11 +136,18 @@ Now that we have our file (tsv or whatever you chose) we can read our data into 
 Since my data is tabulator separated, is called "example.tsv.txt" (yours may be in a different format and called something else) and has a header, i will import it the following way:
 
 
+```{r, results = "hide", eval = FALSE}
+my_data <- read.table("example.tsv.txt", header = TRUE, sep = "\t", dec = ".")
+my_data
+```
 
-```{r, results = "hide"}
+```{r, results = "hide", echo = FALSE}
 my_data <- read.table("data/example.tsv.txt", header = TRUE, sep = "\t", dec = ".")
 my_data
 ```
+
+
+
 
 ```{r, echo = FALSE}
 knitr::kable(my_data)

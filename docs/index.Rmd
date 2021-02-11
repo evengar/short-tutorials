@@ -19,4 +19,6 @@ The guides are found here:
 
 \ 
 
+If you find any errors in the tutorials, or have suggestions, please post an issue over at the [github page](https://github.com/evengar/short-tutorials). There you will also find the RMarkdown scripts used to create the tutorials.
+
 _Even Sletteng Garvang, `r Sys.Date()`_
