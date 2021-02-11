@@ -1,0 +1,22 @@
+---
+title: "Short R tutorials"
+output: 
+  bookdown::html_document2:
+    css: "../style.css"
+---
+
+This is a collection of short tutorials in specific topics in the R programming language. The tutorials were originally made for the course BIOS3000/4000 at the University of Oslo, but are general-purpose and hopefully useful to anyone learning R.
+
+The guides are found here:
+
+* [data import](https://evengar.github.io/short-tutorials/working_with_data_files.html)
+
+* [data frames and subsetting](https://evengar.github.io/short-tutorials/short_dataframe.html)
+
+* [plotting](https://evengar.github.io/short-tutorials/plot_in_r.html)
+
+* [ggplot2](https://evengar.github.io/short-tutorials/ggplot_guide.html) (with special focus on plotting model predictions)
+
+\ 
+
+_Even Sletteng Garvang, `r Sys.Date()`_
