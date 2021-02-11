@@ -1,0 +1,324 @@
+---
+title: "Plotting with ggplot2"
+subtitle: "With special focus on plotting model predictions and confidence intervals"
+author: "Even Garvang"
+date: "`r Sys.Date()`"
+output: 
+  bookdown::html_document2:
+    css: "style.css"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      fig.width = 5, 
+                      fig.asp = 0.618, 
+                      comment = "#>",
+                      warning = FALSE,
+                      message = FALSE,
+                      collapse = TRUE)
+```
+
+# Introduction {-}
+
+You have already learned how to make basic plots with base R in the [short tutorial about plotting](https://evengar.github.io/short-tutorials/plotting.html). However, when making more advanced plots, for example plotting model predictions with confidence intervals, base R may become a bit clunky to use. In this tutorial you will learn about the `ggplot2` package, where you gain quite a lot of useful functionality, at the expense of having to learn some new syntax.
+
+
+This guide is divided into 3 parts: First I give a general overview of the ggplot2 syntax, then I go through plotting continuous predictions with confidence intervals and finally plotting predictions for categorical predictors. The guide may be updated if there is need in the future.
+
+## Prerequisites {-}
+
+To complete the tutorial you will need the following:
+
+* The package `ggplot2`. Make sure to install it with `install.packages()` before starting
+* The file [student_means.csv](https://github.com/evengar/short-tutorials/raw/master/student_means.csv) (from the third course week in BIOS3000/4000)
+* The file [wheatlings_bio2150_F18.csv](https://github.com/evengar/short-tutorials/raw/master/wheatlings_bio2150_F18.csv) (from the fourth course week in BIOS3000/4000)
+
+# The basics of ggplot2
+
+The syntax of `ggplot2` is quite different from base R's `plot()` (or anything in base R for that matter). The philosophy is to start with a data set and choose variables, and then add layers on top to make the visualization you want. To make a ggplot, you need (at the very least) 3 things:
+
+:::{.green}
+
+**The three things you need for a ggplot:**
+
+1. **Data**. This must be contained in a data frame, ggplot doesn't work with vectors directly.
+2. **Variables**. The variables you plot are mapped to what are called _aesthetics_ in the ggplot world. Aesthetics include x-axis, y-axis, color, point shape, line type and more.
+3. **Geometry**. Once you have your data and variables, you have to add a way to represent them. This is done by adding layers of geometry, for example points, lines, boxplots, histograms and much more.
+
+:::
+
+## Building up a ggplot step by step
+
+Here, we will build up a simple scatterplot using the three elements I listed above. We will start by loading the `ggplot2` package (remember to install it first if you haven't already done so!).
+
+```{r}
+library(ggplot2)
+```
+
+We will use the `student_means.csv` data for plotting, so we need to import that, and look at what it contains. NB! We will use the argument `stringsAsFactors = TRUE` when we import, to ensure that all text columns are encoded as factors (this is convenient when the goal is to model).
+
+```{r, echo = FALSE}
+student_means <- read.csv("../student_means.csv", stringsAsFactors = TRUE)
+```
+
+
+```{r, eval = FALSE}
+student_means <- read.csv("student_means.csv", stringsAsFactors = TRUE)
+summary(student_means)
+```
+
+```{r, echo = FALSE}
+summary(student_means)
+```
+
+We will now make a scatter plot of `Foot` against `Height` (like we have done in the tutorials in BIOS3000/4000)
+
+### Data {-}
+
+First, we need to tell ggplot what data we are going to use. This is the first argument of the `ggplot()` function.
+
+```{r, fig.cap = "Dude, where's my plot?!"}
+ggplot(student_means)
+```
+
+As you can see, this outputs a completely empty plot. That kind of makes sense, we lack two things according to the list I made above. Let's add some variables/aesthetics.
+
+### Variables {-}
+
+The variables are the second argument of the `ggplot()` function. Additionally, **all variables need to be wrapped inside the `aes()` function!** Remembering this will save you a lot of headaches in the future.
+
+So, let's add `Foot` on the x-axis, and `Height` on the y-axis:
+
+```{r, fig.cap = "Well, at least we have axes now!"}
+ggplot(student_means, aes(x = Foot, y = Height))
+```
+
+Note that you don't need to use the `$` to access the `Foot` and `Height` columns, neat! This only works inside of `aes()` (which is where your variables should go anyways).
+
+Our plot is still empty, but at least we have axes corresponding to the range of our data. Next, we will add some points.
+
+### Geometry {-}
+
+Geometry is added with the `+` operator, using their own separate functions. The functions all start with `geom_`, and the function for adding points is `geom_point()`.
+
+```{r, fig.cap = "Wohoo, our plot looks like a plot now!"}
+ggplot(student_means, aes(x = Foot, y = Height)) + geom_point()
+```
+
+Now we've made a nice little scatterplot of our variables. We could also add more geoms if we want to. For instance, `geom_smooth()` adds a regression line (we use the argument `method = "lm"` to specify linear regression):
+
+```{r, fig.cap = "Even with confidence intervals!"}
+ggplot(student_means, aes(x = Foot, y = Height)) + 
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+Nice and simple, and shows the trend in our data with added uncertainty. 
+
+## Aesthetics
+
+In the previous plot, we only mapped our variables to the aesthetics `x` and `y`. The real power of ggplot, however, is the concept that **all aesthetics can be mapped to variables**. This means that if we want to color our points by sex, all we need to do is to map the `Sex` column to the `col` aesthetic.
+
+```{r sex-foot-int, fig.cap="All geoms colored by `Sex`"}
+ggplot(student_means, aes(x = Foot, y = Height, col = Sex)) + 
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+Notice how both the points and regression now follow `Sex` using different colors for the different sexes (`geom_smooth()` is plotting an interaction model here by the way, more on this later). Also, we automagically get a legend, telling us what the colors mean!
+
+If you want to map a variable to an aesthetic for only one geom, you can supply the mapping directly to the geom function instead:
+
+```{r, fig.cap = "Only `geom_point()` is colored by sex"}
+ggplot(student_means, aes(x = Foot, y = Height)) + 
+  geom_point(aes(col = Sex)) + #color now only affects the points
+  geom_smooth(method = "lm")
+```
+
+More geoms and aesthetics, and ways to use these, will be introduced in the parts about plotting model predictions.
+
+## Some additional ggplot tips
+
+You can save your ggplot to an object. This is useful if you want to use the same fundament for multiple plots.
+
+```{r, results='hide'}
+fh_plot <- ggplot(student_means, aes(x = Foot, y = Height)) + 
+  geom_point(aes(col = Sex)) + #color now only affects the points
+  geom_smooth(method = "lm")
+
+fh_plot
+```
+
+You can add labels and title by adding the `labs()` function (using `+`, like before).
+
+```{r, fig.cap="Now it's so self explanatory that this figure caption is redundant :("}
+fh_plot +
+  labs(title = "Relationship between footlength and height",
+       subtitle = "Data from measurements by BIOS3000/4000 students in 2020",
+       x = "Foot length (cm)",
+       y = "Height (cm)")
+```
+
+`ggplot2` also has some pre-packaged themes that you can add if you don't like the default grey, for example `theme_bw()`.
+
+```{r, fig.cap="That's nice to look at!"}
+fh_plot +
+  theme_bw()
+```
+
+
+You can set static aesthetics (i.e. not mapped to variables) by putting the arguments **outside of `aes()`**. For these aesthetics, you can use the same colors, line types and point shapes as in base R.
+
+```{r, fig.cap = "Not so pretty anymore, maybe? But at least I put my personal touch on it!"}
+ggplot(student_means, aes(x = Foot, y = Height)) + 
+  geom_point(col = "steelblue",
+             pch = 14) + #static color and shape for all points
+  geom_smooth(method = "lm", 
+              col = "firebrick",
+              lty = 2,
+              fill = "yellow") #static color, linetype and fill
+```
+
+
+# Plotting continuous model predictions
+
+We will now turn to some examples of plotting model predictions with ggplot2. We will base it on the following linear models (from week 3 in BIOS3000/4000):
+
+```{r}
+fit_Sex_Foot <- lm(Height ~ Sex + Foot, data = student_means)
+fit_Sex_Foot_interaction <- lm(Height ~ Sex*Foot, data = student_means)
+```
+
+The interaction model is actually plotted already in Figure \@ref(fig:sex-foot-int), with a confidence interval and everything. Plotting simple models like this with interaction is as easy as mapping both your points and your regression lines by color. 
+
+For basically all other kinds of models, like the additive model `fit_Sex_Foot`, we will have to do manual predictions and plot those. The following code for doing this is copy-pasted from the tutorials in BIOS3000/4000 (courtesy of Torbjørn Ergon):
+
+```{r}
+model_fit = fit_Sex_Foot
+x_range_F = range(student_means$Foot[student_means$Sex=="female"])
+x_range_M = range(student_means$Foot[student_means$Sex=="male"])
+pred_data_F = data.frame(Sex = "female", Foot = seq(x_range_F[1], x_range_F[2], length.out = 50))
+pred_data_M = data.frame(Sex = "male", Foot = seq(x_range_M[1], x_range_M[2], length.out = 50))
+pred_data = rbind(pred_data_F, pred_data_M)
+pred = predict(model_fit, pred_data, interval = "confidence")
+pred = cbind(pred_data, pred)
+```
+
+We now have the object `pred`, which is a data frame, and thus readily plotable (if that's a word) with `ggplot2`. We will use a new geom, `geom_line()` to add lines for our predictions.
+
+```{r, fig.cap = "Lines for our predictions."}
+additive_plot <- ggplot(pred, aes(x = Foot, y = fit, col = Sex)) +
+  geom_line()
+additive_plot
+```
+
+To add confidence intervals, we add a `geom_ribbon` and map `lwr` and `upr` to the aesthetics `ymin` and `ymax`, respectively. `alpha` and `lty` are for making the plot more visually pleasing (try without and see for yourself!). They are not mapped to variables, and thus go outside of `aes()`.
+
+```{r, fig.cap = "Ribbon for confidence intervals. Alpha is set to 0.2 for making the ribbon transparent."}
+additive_plot_conf <- additive_plot +
+  geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.2, lty = 2)
+additive_plot_conf
+```
+
+Finally, we can add the original points from our data set. Plotting this becomes a bit awkward, however, as the original data is in one data frame, and the prediction in another. This is solved by supplying a `data` argument whenever we're using a different data set than is provided in the `ggplot()` function. In this case we swap the prediction data `pred` with the original data `student_means`.
+
+```{r, fig.cap = "Data added from the student_means data set as points."}
+additive_plot_conf +
+  geom_point(data = student_means, aes(x = Foot, y = Height))
+```
+
+Feel free to add some customization to this plot to make it prettier!
+
+# Plotting categorical model predictions
+
+For this part, we will use the [wheatlings_bio2150_F18.csv](https://github.com/evengar/short-tutorials/raw/master/wheatlings_bio2150_F18.csv) data. The data set contains growth data for different wheat varieties using different fertilizers at different concentrations.
+
+First, we import and look at the data, like we did for the student data.
+
+```{r, echo = FALSE}
+wheat <- read.csv("../wheatlings_bio2150_F18.csv", stringsAsFactors = TRUE)
+```
+
+
+```{r, eval = FALSE}
+wheat <- read.csv("wheatlings_bio2150_F18.csv", stringsAsFactors = TRUE)
+summary(wheat)
+```
+
+```{r, echo = FALSE}
+summary(wheat)
+```
+
+
+## Boxplots and faceting
+
+A boxplot is often a good representation of one continuous and one categorical variable, like for example if we want to plot `length` against `conc`. As before, we choose our data, aesthetics and add a geom, in this case `geom_boxplot()`.
+
+```{r, fig.cap = "A nice boxplot, though a bit lacking in information."}
+conc_box <- ggplot(wheat, aes(x = conc, y = length)) +
+  geom_boxplot()
+```
+
+However, if you've seen the data before, you know that the wheat variety drastically affect length, so we might want to include that information in our plot. One way to do this is to split our plot into different panels based on a variable[^1]. In ggplot, this is called faceting. You can create facets by adding `facet_wrap()` to your plot like this:
+
+[^1]:
+    Another way would be to use the `fill` aesthetic and map that to `variety`:
+    ```{r}
+    ggplot(wheat, aes(x = conc, y = length, fill = variety)) +
+      geom_boxplot()
+    ```
+    
+    But this is perhaps not as clean.
+
+
+```{r, fig.cap="Now this is more informative!"}
+conc_box +
+  facet_wrap(~variety)
+```
+
+Note that here we have an exception to our "all variables go inside `aes()`"-rule, which simply is something you have to remember. The same goes for the tilde `~`, which may be easier to understand if you read it like "function of", and thus the entire thing as "facet as a function of variety".
+
+Bonus: If you want, you could add points on top of your boxplot, to show more of your data. `geom_jitter()` randomly moves points to prevent plotting them on top of each other.
+
+```{r}
+conc_box +
+  facet_wrap(~variety) +
+  geom_jitter(col = "firebrick", alpha = 0.5)
+```
+
+## Predictions with errors
+
+Boxplots are nice for showing data, but for predictions you only have a single data point per variable combination. For plotting predictions with error, we can use the geoms `geom_point()` and `geom_errorbar()`.
+
+First, we need to make the model and prediction data, using an additive model with `conc` and `variety` as predictors (code copy-pasted from the tutorial in BIOS3000/4000, courtesy of Torbjørn Ergon):
+
+```{r}
+fit_ad <- lm(length ~ conc + variety, data = wheat)
+Newdata = expand.grid(variety = unique(wheat$variety), conc = unique(wheat$conc))
+Pred = cbind(Newdata, predict(fit_ad, newdata = Newdata, interval = "confidence"))
+```
+
+Now we can plot first the predictions (with facets like before):
+
+```{r, fig.cap = "Plot of predictions"}
+wheat_pred <- ggplot(Pred, aes(x = conc, y = fit)) +
+  geom_point(col = "firebrick") +        # points for predictions
+  facet_wrap(~variety)  # facets by variety
+
+wheat_pred
+```
+
+Then add confidence intervals with `geom_errorbar()`. Like `geom_ribbon()` from before, it takes the `ymin` and `ymax` aesthetics, and we map `lwr` and `upr` to these.
+
+```{r, fig.cap = "With error bars, width argument set to 0.4 for a prettier plot."}
+wheat_pred +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.4, col = "steelblue")
+```
+
+# Going further {-}
+
+Hope this little tutorial was useful! It will be updated if the need arises, in the meantime you should now know quite a bit of ggplot, and be able to figure stuff out yourself. If you are able to formulate your problem in general terms, google in general, and the stackoverflow results in particular will be very useful.
+
+Good luck with your plotting!

@@ -7,8 +7,10 @@ output:
     toc: true
     toc_float: true
     highlight: pygments
+    css: "style.css"
 editor_options: 
   chunk_output_type: console
+css: style.css
 ---
 
 <style type="text/css">
