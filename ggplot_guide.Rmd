@@ -37,8 +37,8 @@ This guide is divided into 3 parts: First I give a general overview of the ggplo
 To complete the tutorial you will need the following:
 
 * The package `ggplot2`. Make sure to install it with `install.packages()` before starting
-* The file [student_means.csv](https://raw.githubusercontent.com/evengar/short-tutorials/master/data/student_means.csv) (from the third course week in BIOS3000/4000)
-* The file [wheatlings_bio2150_F18.csv](https://raw.githubusercontent.com/evengar/short-tutorials/master/data/wheatlings_bio2150_F18.csv) (from the fourth course week in BIOS3000/4000)
+* The file [student_means.csv](https://github.com/evengar/short-tutorials/raw/master/data/student_means.csv) (from the third course week in BIOS3000/4000)
+* The file [wheatlings_bio2150_F18.csv](https://github.com/evengar/short-tutorials/raw/master/data/wheatlings_bio2150_F18.csv) (from the fourth course week in BIOS3000/4000)
 
 # The basics of ggplot2
 
