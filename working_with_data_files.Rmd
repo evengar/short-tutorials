@@ -53,7 +53,7 @@ At some point as a biologist you will have your own data to work with, and you w
 
 For this tutorial we will use the following:
 
-* [This](https://github.com/evengar/short-tutorials/raw/master/example.xlsx) data set
+* [This](https://raw.githubusercontent.com/evengar/short-tutorials/master/data/example.xlsx) data set
 * The package `readxl`
 
 If you don't have readxl installed, you can install it by running the command `install.packages("readxl")`. Make sure you download the data set to your current R working directory. You can set your working directory either by running `setwd()` and manually inputting a path, or simply by navigating to `Session > Set working directory` in RStudio.
