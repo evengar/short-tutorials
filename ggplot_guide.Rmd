@@ -264,6 +264,7 @@ A boxplot is often a good representation of one continuous and one categorical v
 ```{r, fig.cap = "A nice boxplot, though a bit lacking in information."}
 conc_box <- ggplot(wheat, aes(x = conc, y = length)) +
   geom_boxplot()
+conc_box
 ```
 
 However, if you've seen the data before, you know that the wheat variety drastically affect length, so we might want to include that information in our plot. One way to do this is to split our plot into different panels based on a variable[^1]. In ggplot, this is called faceting. You can create facets by adding `facet_wrap()` to your plot like this:
