@@ -15,10 +15,10 @@ The guides are found here:
 
 * [plotting](https://evengar.github.io/short-tutorials/plot_in_r.html)
 
-* [ggplot2](https://evengar.github.io/short-tutorials/ggplot_guide.html) (with special focus on plotting model predictions)
+* [ggplot2](https://evengar.github.io/short-tutorials/ggplot_guide.html) (with special emphasis on plotting model predictions)
 
 \ 
 
-If you find any errors in the tutorials, or have suggestions, please post an issue over at the [github page](https://github.com/evengar/short-tutorials). There you will also find the RMarkdown scripts used to create the tutorials.
+If you find any errors in the tutorials, or have suggestions, please post an issue over at the [github page](https://github.com/evengar/short-tutorials). There you will also find the RMarkdown documents used to create the tutorials.
 
 _Even Sletteng Garvang, `r Sys.Date()`_
